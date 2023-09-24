@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+
 
 import Filter from "./components/Filter"
 import PersonFrom from "./components/PersonForm"
@@ -39,12 +39,32 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if(persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to persons`)
-      setNewName('')
-      return
-    }
+    const personExist = persons.some(person => person.name === newName)
+    const message = `${newName} is already added to phonebook, replace the old number with new one?`
 
+
+    if(personExist) {
+
+      if (window.confirm(message)) {
+        const personObject = persons.find(person => person.name === newName)
+
+        const updatedPerson = {...personObject, number: newNumber}
+
+        personService
+        .update(updatedPerson.id, updatedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== updatedPerson.id ? person : returnedPerson))
+        })
+        console.log(persons)
+      }
+
+      else {
+        setNewName('')
+        setNewNumber('')
+        return
+      }
+    }
+    
     const personObject = {
       name: newName,
       number: newNumber,
@@ -52,12 +72,16 @@ const App = () => {
 
     personService
     .create(personObject)
-    .then(returnedPerson => {
+    .then( returnedPerson => {
       setPersons(persons.concat(returnedPerson))
       setNewName('')
       setNewNumber('')
     })
+    
   }
+
+
+  
 
   const removePerson = (id) => {
 
