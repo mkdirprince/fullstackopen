@@ -48,7 +48,6 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
     }
 
     personService
@@ -58,6 +57,21 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     })
+  }
+
+  const removePerson = (id) => {
+
+    const person = persons.find(person => person.id === id)
+    const message = `Delete ${person.name} ?`
+
+    if (window.confirm(message)){
+      personService
+      .remove(id)
+      .then (returnedPerson => {
+      setPersons(persons.filter(person => person.id !== id))
+    })
+    }
+    
   }
 
 
@@ -81,6 +95,7 @@ const App = () => {
       <h2>Numbers</h2>
       <Persons 
         personsToShow={personsToShow}
+        removePerson={removePerson}
       />
     </>
   )
