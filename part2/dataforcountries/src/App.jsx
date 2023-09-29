@@ -2,18 +2,6 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 
 
-const Filter = ({filterValue, handleFilterChange}) => {
-  return (
-    <p>
-        find countries <input 
-          type="text" 
-          name="filter"
-          value={filterValue} 
-          onChange={handleFilterChange}
-        />
-      </p>
-  )
-}
 
 const Country = ({country}) => {
 
@@ -37,7 +25,10 @@ const Country = ({country}) => {
   )
 }
 
-const Countries = ({countriesToShow}) => {
+const Countries = ({countriesToShow, showButton}) => {
+
+
+
   if (countriesToShow.length === 1) {
     return (
       <Country country={countriesToShow[0]}/>
@@ -53,16 +44,30 @@ const Countries = ({countriesToShow}) => {
 
   else {
     return countriesToShow.map( country => 
-      <p key={country.cca3}>{country.name.common}</p>  
+      <p key={country.cca3}>{country.name.common} <button onClick={ () => showButton(country)}>show</button></p>  
     )
   }
 
+}
+
+const Filter = ({filterValue, handleFilterChange}) => {
+  return (
+    <p>
+        find countries <input 
+          type="text" 
+          name="filter"
+          value={filterValue} 
+          onChange={handleFilterChange}
+        />
+      </p>
+  )
 }
 
 const App = () => {
 
   const [countries, setCountries] = useState([])
   const [filterValue, setFilterValue] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
 
   useEffect(() => {
@@ -76,9 +81,14 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     setFilterValue(event.target.value.toLowerCase())
+    setSelectedCountry(null)
   }
 
-  const countriesToShow = countries.filter(country => country.name.common.toLowerCase().startsWith(filterValue))
+  let countriesToShow = countries.filter(country => country.name.common.toLowerCase().startsWith(filterValue))
+
+  const showButton = (country) => {
+   setSelectedCountry(country)
+  }
 
 
   return (
@@ -87,9 +97,15 @@ const App = () => {
         filterValue={filterValue} 
         handleFilterChange={handleFilterChange}
       />
-      <Countries 
+      {
+        selectedCountry 
+        ? <Country country={selectedCountry}/>
+        : <Countries 
         countriesToShow={countriesToShow}
+        showButton={showButton}
       />
+      }
+      
     </>
   )
 }
