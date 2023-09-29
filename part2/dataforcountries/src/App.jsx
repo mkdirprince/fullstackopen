@@ -2,11 +2,39 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 
 
+const Weatherdata = ({weatherData, capital}) => {
+  return (
+    <>
+      <h2>Weather in {capital[0]}</h2>
+      <p>temperature {(weatherData.main.temp - 273.15).toFixed(2)} Celcius</p>
+      <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`} alt="" />
+      <p>wind {weatherData.wind.speed}</p>
+    </>
+  )
+}
+
 
 const Country = ({country}) => {
 
-  const {capital, area, languages, flags} = country
+  const [weatherData, setWeatherData] = useState(null)
 
+  const [lat, lon] = country.capitalInfo.latlng
+  const api_key = import.meta.env.VITE_WEATHER_KEY
+
+  useEffect(() => {
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`)
+    .then(response => {
+      setWeatherData(response.data)
+    })
+  })
+
+  if (!weatherData) {
+    return null
+  }
+
+  const {capital, area, languages, flags} = country
+ 
+  
   return (
     <>
       <h2>{country.name.common}</h2>
@@ -21,6 +49,8 @@ const Country = ({country}) => {
         )}
       </ul>
       <img src={flags.png} alt="" />
+      <Weatherdata weatherData={weatherData} capital={capital}/>
+      
     </>
   )
 }
@@ -77,7 +107,7 @@ const App = () => {
     })
   }, [])
 
-
+  
 
   const handleFilterChange = (event) => {
     setFilterValue(event.target.value.toLowerCase())
