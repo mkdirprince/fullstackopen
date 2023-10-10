@@ -1,8 +1,24 @@
 // import express library
 const express = require('express')
+
+// import morgan library
+const morgan = require("morgan")
+
+// custom token for logging the body of the post request
+morgan.token('data', (request, response) => {
+  return JSON.stringify(request.body)
+})
+
+// assign app to the express library to use
 const app = express()
 
+// use the expres built in json function
 app.use(express.json())
+// use morgan tiny predifined template
+app.use(morgan('tiny'))
+
+// use the custom morgan function to generate log
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 
 // persons array for storing phonebook contacts
