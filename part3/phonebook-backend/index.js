@@ -4,6 +4,9 @@ const express = require('express')
 // import morgan library
 const morgan = require("morgan")
 
+// import cors
+const cors = require("cors")
+
 // custom token for logging the body of the post request
 morgan.token('data', (request, response) => {
   return JSON.stringify(request.body)
@@ -11,6 +14,12 @@ morgan.token('data', (request, response) => {
 
 // assign app to the express library to use
 const app = express()
+
+// use cors
+app.use(cors())
+
+//use express static middleware
+app.use(express.static('dist'))
 
 // use the expres built in json function
 app.use(express.json())
@@ -122,7 +131,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 
 // declaring PORT and listening for changes
-const PORT = 3000
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
