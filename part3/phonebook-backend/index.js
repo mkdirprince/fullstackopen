@@ -18,6 +18,20 @@ morgan.token('data', (request, response) => {
   return JSON.stringify(request.body)
 })
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: "unknown endpoint"})
+}
+
 // assign app to the express library to use
 const app = express()
 
@@ -54,21 +68,22 @@ app.get('/api/persons', (request, response) => {
   Person.find({}).then(people => {
     response.json(people)
   })
+  .catch(error => next(error))
 })
 
 
 // route for getting a single person' resource using id from the persons array
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
+  Person.findById(request.params.id).then(note => {
+    if (note) {
+      response.json(note)
+    }
 
-  if (person) {
-    response.json(person)
-  }
-
-  else {
-    response.status(404).end()
-  }
+    else {
+      response.status(404).end()
+    }
+  })
+  .catch(error => next(error))
 })
 
 
@@ -96,15 +111,33 @@ app.post('/api/persons', (request, response) => {
 
 })
 
+app.put('/api/persons/:id', (request, response) => {
+
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findById(request.params.id, person, {new: true}).then(updatedNote => {
+    response.json(updatedNote)
+  })
+  .catch(error => next(error))
+})
+
 
 // route for deleting a single person resource
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  Person.findByIdAndRemove(request.params.id).then( result => {
+    response.status(204).end()
+  })
+  .catch(error => next(error))
 })
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 
 // declaring PORT and listening for changes
