@@ -1,3 +1,6 @@
+
+require('dotenv').config()
+
 // import express library
 const express = require('express')
 
@@ -6,6 +9,9 @@ const morgan = require("morgan")
 
 // import cors
 const cors = require("cors")
+
+// import the database
+const Person = require('./models/person')
 
 // custom token for logging the body of the post request
 morgan.token('data', (request, response) => {
@@ -30,30 +36,6 @@ app.use(morgan('tiny'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 
-// persons array for storing phonebook contacts
-let persons = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
 // route for info 
 app.get('/info', (request, response) => {
   
@@ -69,7 +51,9 @@ app.get('/info', (request, response) => {
 
 // route for the getting all persons array for storing phonebook generated as json
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(people => {
+    response.json(people)
+  })
 })
 
 
@@ -87,35 +71,28 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-// helper function for generating id
-const generateId = () => {
-  return Math.floor(Math.random() * 1000)
-}
+
 
 
 // route for adding a person to the persons array
 app.post('/api/persons', (request, response) => {
   const body = request.body 
 
-  if (!body || !body.name || !body.number) {
+  if (!body) {
     return response.status(400).json({
       error: 'missing content'
     })
   }
-  else if (persons.some(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 
 })
 
@@ -131,7 +108,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 
 // declaring PORT and listening for changes
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
