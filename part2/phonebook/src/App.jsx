@@ -65,7 +65,7 @@ const App = () => {
 
             setTimeout(() => {
               setNotificationMessage(null)
-            }, 3000)
+            }, 4000)
 
             setPersons(persons.filter(person => person.id !== updatedPerson.id))
           })
@@ -89,8 +89,15 @@ const App = () => {
 
           setTimeout(() => {
             setNotificationMessage(null)
-          }, 3000)
+          }, 4000)
 
+        })
+        .catch( error => {
+          setNotificationMessage(error.response.data.error)
+
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 4000)
         })
     }
 
