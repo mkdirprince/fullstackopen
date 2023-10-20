@@ -97,7 +97,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  if (!body) {
+  if (!body || !body.content) {
     return response.status(400).json({
       error: 'missing content'
     })
