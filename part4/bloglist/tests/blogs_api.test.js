@@ -89,6 +89,48 @@ test('return status code 400 Bad Request if title or url is missing', async () =
 
 })
 
+test(' deleting a single blog post resource is successful', async () => {
+
+  const blogAtStart = await helper.blogsInDb()
+
+  const blogToDelete = blogAtStart[0]
+
+  await api
+  .delete(`/api/blogs/${blogToDelete.id}`)
+  .expect(204)
+
+  const blogAtEnd = await helper.blogsInDb()
+
+  expect(blogAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+  const titles = blogAtEnd.map(blog => blog.title)
+
+  expect(titles).not.toContain(blogToDelete.title)
+
+})
+
+test(' successful update the information of an individual blog post', async () => {
+
+  const blogAtStart = await helper.blogsInDb()
+
+  const blogToUpdate = blogAtStart[0]
+
+  const updateLikes = 9
+
+  const updatedBlog = {
+    ...blogToUpdate,
+    likes: updateLikes
+  }
+
+  const response = await api
+  .put(`/api/blogs/${updatedBlog.id}`)
+  .send(updatedBlog)
+  .expect(200)
+  .expect('Content-Type', /application\/json/)
+  
+  expect(response.body.likes).toBe(updateLikes)
+})
+
 
 
 afterAll( async () => {
