@@ -24,8 +24,8 @@ blogRouter.get('/', async (request, response) => {
 
 
 
-  blogRouter.post('/',  async (request, response) => {
-    const body = request.body;
+blogRouter.post('/',  async (request, response) => {
+   const body = request.body;
 
 
       // extracted away in the userExtractor middleware
@@ -57,7 +57,7 @@ blogRouter.get('/', async (request, response) => {
     await user.save();
   
     response.status(201).json(savedBlog);
-  });
+});
   
 
 
@@ -84,22 +84,20 @@ blogRouter.delete('/:id',  async (request, response) => {
 
   // const user = await User.findById(decodedToken.id)
 
+  const blog = await Blog.findById(request.params.id)
+
   const user = request.user
 
-
-  const blogToDelete = await Blog.findById(request.params.id)
-
-  if (!user || blogToDelete.user.toString() !== user.id.toString()) {
+  if (!user || blog.user.toString() !== user.id.toString()) {
     return response.status(401).json({ error: 'operation not permitted' })
   }
 
-  user.blogs = user.blogs.filter(b => b.toString() !== blogToDelete.id.toString() )
+  user.blogs = user.blogs.filter(b => b.toString() !== blog.id.toString() )
 
   await user.save()
-  await blogToDelete.remove()
+  await Blog.deleteOne({ _id: blog._id })
   
   response.status(204).end()
-
 })
 
 
