@@ -1,7 +1,7 @@
 
-import { useState } from "react"
+import { useState } from 'react'
 
-const BlogForm = ({createBlog}) => {
+const BlogForm = ({ createBlog }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -11,7 +11,7 @@ const BlogForm = ({createBlog}) => {
   const addBlog = async (event) => {
     event.preventDefault()
 
-  
+
     createBlog({
       title: title,
       author: author,
@@ -32,36 +32,36 @@ const BlogForm = ({createBlog}) => {
           <label htmlFor="title">
             title
           </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="title"
             id="title"
             value={title}
-            onChange={({target}) => setTitle(target.value)}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </p>
         <p>
           <label htmlFor="author">
             Author
           </label>
-          <input 
-            type="author" 
+          <input
+            type="author"
             name="author"
             id="author"
             value={author}
-            onChange={({target}) => setAuthor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </p>
         <p>
           <label htmlFor="url">
             url
           </label>
-          <input 
-            type="url" 
+          <input
+            type="url"
             name="url"
             id="url"
             value={url}
-            onChange={({target}) => setUrl(target.value)}
+            onChange={({ target }) => setUrl(target.value)}
           />
         </p>
         <p>

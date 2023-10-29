@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blog'
 import loginService from './services/login'
 
 import Blogs from './components/Blogs'
-import LoginForm from "./components/LoginFrom"
-import BlogForm from "./components/BlogForm"
-import Notification from "./components/Notification"
-import Toggleable from "./components/Toggleable"
+import LoginForm from './components/LoginFrom'
+import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
+import Toggleable from './components/Toggleable'
 
 const App = () => {
 
@@ -19,10 +19,10 @@ const App = () => {
 
   useEffect(() => {
     blogService
-    .getAll()
-    .then(blogs => {
-      setBlogs(blogs)
-    })
+      .getAll()
+      .then(blogs => {
+        setBlogs(blogs)
+      })
   }, [])
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const App = () => {
       const savedBlog = await blogService.create(newObject)
 
       setBlogs(blogs.concat(savedBlog))
-      
+
       setNotificationMessage(` a new blog "${newObject.title}" by ${newObject.author}`)
       setTimeout(() => {
         setNotificationMessage(null)
@@ -85,25 +85,25 @@ const App = () => {
 
   const removeBlog = async (id) => {
 
-      const blog = blogs.find(blog => blog.id === id)
+    const blog = blogs.find(blog => blog.id === id)
 
-      if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}`)) {
-        try {
-          await blogService.remove(id);
-    
-          setBlogs(blogs.filter(blog => blog.id !== id));
-          
-          setNotificationMessage(`${blog.title} deleted successfully`)
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}`)) {
+      try {
+        await blogService.remove(id)
 
-          setTimeout( () => {
-            setNotificationMessage(null)
-          }, 5000)
-    
-        } catch (exception) {
-          console.error('Error while removing the blog:', exception);
-          
-        }
+        setBlogs(blogs.filter(blog => blog.id !== id))
+
+        setNotificationMessage(`${blog.title} deleted successfully`)
+
+        setTimeout( () => {
+          setNotificationMessage(null)
+        }, 5000)
+
+      } catch (exception) {
+        console.error('Error while removing the blog:', exception)
+        setNotificationMessage(`unable to delete ${blog.title}`)
       }
+    }
   }
 
 
@@ -111,11 +111,11 @@ const App = () => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
 
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      
+
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -145,7 +145,7 @@ const App = () => {
     return (
       <>
         <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm 
+          <BlogForm
             createBlog={addBlog}
           />
         </Toggleable>
@@ -159,8 +159,8 @@ const App = () => {
       <>
         <h2>log in to application</h2>
         <Notification message={notificationMessage} error={error}/>
-        <LoginForm 
-          setUser={setUser}  
+        <LoginForm
+          setUser={setUser}
           login={login}
           username={username}
           password={password}
@@ -176,9 +176,9 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification message={notificationMessage} error={error}/>
       <p>
-        {user.username} logged in  
+        {user.username} logged in
         <button type="button" onClick={logout}>
-        Logout</button> 
+        Logout</button>
       </p>
       {blogForm()}
       <Blogs blogs={blogs} user={user} updateLikes={updateLikes} removeBlog={removeBlog}/>

@@ -1,7 +1,7 @@
 
-const LoginForm = ({login, username, password, setUsername, setPassword}) => {
+const LoginForm = ({ login, username, password, setUsername, setPassword }) => {
 
-  
+
   return (
     <>
       <form onSubmit={login}>
@@ -9,24 +9,24 @@ const LoginForm = ({login, username, password, setUsername, setPassword}) => {
           <label htmlFor="username">
             username
           </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="username"
             id="username"
             value={username}
-            onChange={({target}) => setUsername(target.value)}
+            onChange={({ target }) => setUsername(target.value)}
           />
         </p>
         <p>
           <label htmlFor="password">
             password
           </label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             name="password"
             id="password"
             value={password}
-            onChange={({target}) => setPassword(target.value)}
+            onChange={({ target }) => setPassword(target.value)}
           />
         </p>
         <p>
@@ -37,6 +37,7 @@ const LoginForm = ({login, username, password, setUsername, setPassword}) => {
   )
 
 }
+
 
 
 export default LoginForm

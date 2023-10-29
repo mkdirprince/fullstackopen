@@ -1,8 +1,8 @@
-import {useState } from "react"
+import { useState } from 'react'
 
 
 
-const Blog = ({blog, user, updateLikes, removeBlog}) => {
+const Blog = ({ blog, user, updateLikes, removeBlog }) => {
 
   const [fullBlog, setFullblog] = useState(false)
 
@@ -35,14 +35,14 @@ const Blog = ({blog, user, updateLikes, removeBlog}) => {
         <p>{blog.user.name}</p>
         {
           showDelete
-          ? (
-            <p>
-              <button onClick={() => removeBlog(blog.id)}>remove</button>
-            </p>
-          )
-          : ""
+            ? (
+              <p>
+                <button onClick={() => removeBlog(blog.id)}>remove</button>
+              </p>
+            )
+            : ''
         }
-        
+
       </div>
     )
   }
@@ -57,10 +57,10 @@ const Blog = ({blog, user, updateLikes, removeBlog}) => {
 }
 
 
-const Blogs = ({blogs, user, updateLikes, removeBlog}) => {
+const Blogs = ({ blogs, user, updateLikes, removeBlog }) => {
   return (
     <>
-      {blogs.sort((a, b) => a.likes - b.likes).map(blog => 
+      {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
         <Blog key={blog.id} blog={blog} user={user} updateLikes={updateLikes} removeBlog={removeBlog}/>
       )}
     </>
