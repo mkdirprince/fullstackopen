@@ -1,47 +1,33 @@
-import blogService from '../services/blog'
 
 import { useState } from "react"
 
-const BlogForm = ({blogs, setBlogs, setNotificationMessage}) => {
+const BlogForm = ({createBlog}) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
 
-  const createBlog= async (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
 
-    const newObject = {
+  
+    createBlog({
       title: title,
       author: author,
       url: url
-    }
+    })
 
-    try {
-      const savedBlog = await blogService.create(newObject)
-
-      setBlogs(blogs.concat(savedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setNotificationMessage(` a new blog "${title}" by ${author}`)
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 5000)
-
-    }
-
-    catch (exception) {
-      console.log('unathorised acces')
-    }
+    setTitle('')
+    setAuthor('')
+    setUrl('')
 
   }
 
   return (
     <>
       <h2>create new</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={addBlog}>
         <p>
           <label htmlFor="title">
             title
