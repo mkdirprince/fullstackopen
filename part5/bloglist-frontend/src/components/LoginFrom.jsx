@@ -30,7 +30,7 @@ const LoginForm = ({ login, username, password, setUsername, setPassword }) => {
           />
         </p>
         <p>
-          <button type="submit">Login</button>
+          <button id="login-button" type="submit">Login</button>
         </p>
       </form>
     </>
